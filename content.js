@@ -289,6 +289,65 @@ function waitForTarget(callback) {
   }, 500);
 }
 
+function hideDiv2utWithLoading() {
+  const target = document.querySelector("div._2ut_");
+  if (!target) return;
+
+  // Ẩn div
+  target.style.opacity = "0";
+  target.style.pointerEvents = "none";
+
+  // Tạo overlay spinner
+  const overlay = document.createElement("div");
+  overlay.className = "div2ut-overlay";
+
+  // Vị trí overlay
+  const rect = target.getBoundingClientRect();
+  overlay.style.position = "fixed";
+  overlay.style.top = `${rect.top}px`;
+  overlay.style.left = `${rect.left}px`;
+  overlay.style.width = `${rect.width}px`;
+  overlay.style.height = `${rect.height}px`;
+  overlay.style.display = "flex";
+  overlay.style.alignItems = "center";
+  overlay.style.justifyContent = "center";
+  overlay.style.zIndex = "9";
+
+  // Spinner
+  const spinner = document.createElement("div");
+  spinner.className = "div2ut-loader";
+  overlay.appendChild(spinner);
+  document.body.appendChild(overlay);
+
+  // CSS spinner giống Facebook
+  const style = document.createElement("style");
+  style.innerHTML = `
+    .div2ut-loader {
+      border: 4px solid rgba(240, 242, 245, 0.66); /* xám nhạt giống Facebook */
+      border-top: 4px solid rgb(43, 123, 228); /* xanh dương Facebook */
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  `;
+  document.head.appendChild(style);
+
+  // Hiện lại div sau 5 giây và xóa overlay
+  setTimeout(() => {
+    target.style.opacity = "1";
+    target.style.pointerEvents = "auto";
+    overlay.remove();
+  }, 5000);
+}
+
+// Gọi ngay khi script chạy
+hideDiv2utWithLoading();
+
 // ---- Init ----
 waitForTarget(async () => {
   console.log("🔹 Inline editor initialized for", currentPageKey);
